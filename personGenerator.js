@@ -20,27 +20,7 @@ const personGenerator = {
             "id_16": "Морозов"
         }
     }`,
-    surnamesFemaleJson: `{  
-        "count": 16,
-        "list": {
-            "id_1": "Иванова",
-            "id_2": "Смирнова",
-            "id_3": "Кузнецова",
-            "id_4": "Васильева",
-            "id_5": "Петрова",
-            "id_6": "Михайлова",
-            "id_7": "Новикова",
-            "id_8": "Федорова",
-            "id_9": "Кравцова",
-            "id_10": "Николаева",
-            "id_11": "Семёнова",
-            "id_12": "Славина",
-            "id_13": "Степанова",
-            "id_14": "Павлова",
-            "id_15": "Александрова",
-            "id_16": "Морозова"
-        }
-    }`,
+  
     firstNameMaleJson: `{
         "count": 16,
         "list": {
@@ -57,7 +37,7 @@ const personGenerator = {
             "id_11": "Владимир",
             "id_12": "Вадим",
             "id_13": "Олег",
-            "id_14": "Павел",
+            "id_14": "Сергей",
             "id_15": "Арсений",
             "id_16": "Руслан"
         }
@@ -84,50 +64,7 @@ const personGenerator = {
             "id_16": "Инна"
         }
     }`,
-    patronymicsMaleJson: `{
-        "count": 16,
-        "list": {
-            "id_1": "Александрович",
-            "id_2": "Максимович",
-            "id_3": "Иванович", 
-            "id_4": "Артемович", 
-            "id_5": "Дмитриевич", 
-            "id_6": "Никитович", 
-            "id_7": "Михайлович", 
-            "id_8": "Даниилович", 
-            "id_9": "Егорович", 
-            "id_10": "Андреевич", 
-            "id_11": "Владимирович", 
-            "id_12": "Вадимович", 
-            "id_13": "Олегович", 
-            "id_14": "Павлович", 
-            "id_15": "Арсеньевич", 
-            "id_16": "Русланович"
-        }
-    }`,
-    
-    patronymicsFemaleJson: `{
-        "count": 16,
-        "list": {
-            "id_1": "Александровна", 
-            "id_2": "Максимовна", 
-            "id_3": "Ивановна", 
-            "id_4": "Артемовна", 
-            "id_5": "Дмитриевна", 
-            "id_6": "Никитовна", 
-            "id_7": "Михайловна", 
-            "id_8": "Данииловна", 
-            "id_9": "Егоровна", 
-            "id_10": "Андреевна", 
-            "id_11": "Владимировна", 
-            "id_12": "Вадимовна", 
-            "id_13": "Олеговна", 
-            "id_14": "Павловна", 
-            "id_15": "Арсеньевна", 
-            "id_16": "Руслановна" 
-        }
-    }`,
-   
+     
     professionsMaleJson: `{
         "count": 16,
         "list": {
@@ -188,14 +125,29 @@ const personGenerator = {
     },
 
     randomPatronymic: function(gender) {
-        const patronymicsJson = (gender === this.GENDER_FEMALE) ?
-            this.patronymicsFemaleJson :
-            this.patronymicsMaleJson;
+        const maleFirstNames = JSON.parse(this.firstNameMaleJson).list;
+        const randomMaleFirstName = this.randomValue(this.firstNameMaleJson);
     
-        const patronymics = JSON.parse(patronymicsJson).list;
-        return patronymics['id_' + this.randomIntNumber(1, Object.keys(patronymics).length)];
+        if (gender === this.GENDER_FEMALE) {
+            if (randomMaleFirstName.endsWith('а')) {
+                return randomMaleFirstName.slice(0, -1) + 'овна';
+            } else if (randomMaleFirstName.endsWith('й')) {
+                return randomMaleFirstName.slice(0, -1) + 'евна';
+            } else {
+                return randomMaleFirstName + 'овна';
+            }
+        } else {
+            if (randomMaleFirstName.endsWith('а')) {
+                return randomMaleFirstName.slice(0, -1) + 'ович';
+            } else if (randomMaleFirstName.endsWith('й')) {
+                return randomMaleFirstName.slice(0, -1) + 'евич';
+            } else {
+                return randomMaleFirstName + 'ович';
+            }
+        }
     },
-
+    
+    
     randomProfession: function(gender) {
         const professionsJson = (gender === this.GENDER_FEMALE) ?
             this.professionsFemaleJson :
@@ -221,10 +173,9 @@ const personGenerator = {
     randomIntNumber: (max = 1, min = 0) => Math.floor(Math.random() * (max - min + 1) + min),
 
     randomSurname: function(gender) {
-        if (gender === this.GENDER_MALE) {
-            return this.randomValue(this.surnamesMaleJson);
-        } else if (gender === this.GENDER_FEMALE) {
-            return this.randomValue(this.surnamesFemaleJson);
+        if (gender === this.GENDER_FEMALE) {
+            const maleSurname = this.randomValue(this.surnamesMaleJson);
+            return maleSurname + 'а';
         } else {
             return this.randomValue(this.surnamesMaleJson);
         }
